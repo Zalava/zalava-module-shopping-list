@@ -1,0 +1,86 @@
+schemaVersion: 1
+modules:
+  - moduleId: zalava-module-shopping-list
+    version: 0.1.0-alpha.1
+    displayName: Shopping List
+    description: Private household shopping-list tools backed by local SQLite storage
+    supportUrl: https://github.com/Zalava/zalava-module-shopping-list
+    artifact:
+      groupId: org.zalava.modules
+      artifactId: zalava-module-shopping-list
+      version: 0.1.0-alpha.1
+    source:
+      repository: https://github.com/Zalava/zalava-module-shopping-list.git
+      license: Apache-2.0
+    build:
+      command: ["./gradlew", "build"]
+      verificationCommand: ["./gradlew", "test"]
+    compatibility:
+      seaRuntime: ">=1.0.0 <2.0.0"
+    configurationSchema:
+      type: object
+      properties:
+        sqlitePath:
+          type: string
+          description: Optional SQLite database path. Defaults to ./workspace/shopping-list/shopping-list.sqlite.
+      additionalProperties: false
+    factories:
+      - factoryId: shopping-list-household
+        providerType: shopping-list
+    services:
+      provided: []
+      required: []
+    operations:
+      - name: add_item
+        description: Add or update an active shopping-list item
+        sideEffecting: true
+        inputSchema:
+          type: object
+          required: [name]
+          properties:
+            name:
+              type: string
+            quantity:
+              type: string
+          additionalProperties: false
+      - name: list_items
+        description: Return the current active household shopping list
+        sideEffecting: false
+        inputSchema:
+          type: object
+          additionalProperties: false
+      - name: mark_bought
+        description: Remove an active item and record a purchase event
+        sideEffecting: true
+        inputSchema:
+          type: object
+          required: [name]
+          properties:
+            name:
+              type: string
+          additionalProperties: false
+      - name: remove_item
+        description: Remove an active item; reason defaults to bought and discarded avoids purchase history
+        sideEffecting: true
+        inputSchema:
+          type: object
+          required: [name]
+          properties:
+            name:
+              type: string
+            reason:
+              type: string
+              enum: [bought, discarded]
+          additionalProperties: false
+      - name: purchase_summary
+        description: Summarize purchased item counts over recent days
+        sideEffecting: false
+        inputSchema:
+          type: object
+          properties:
+            days:
+              type: integer
+              description: Number of recent days to summarize; defaults to 30
+          additionalProperties: false
+    security:
+      permissions: [local-storage]

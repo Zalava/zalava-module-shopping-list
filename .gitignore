@@ -1,0 +1,6 @@
+.gradle/
+build/
+workspace/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
