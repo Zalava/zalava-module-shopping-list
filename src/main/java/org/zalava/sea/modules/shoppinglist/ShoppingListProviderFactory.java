@@ -3,7 +3,7 @@ package org.zalava.modules.shoppinglist;
 import org.zalava.ProviderFactory;
 import org.zalava.ProviderFactoryContext;
 import org.zalava.ProviderFactoryDescriptor;
-import org.zalava.SeaProvider;
+import org.zalava.ZalavaProvider;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ final class ShoppingListProviderFactory implements ProviderFactory {
     }
 
     @Override
-    public List<SeaProvider> createProviders(ProviderFactoryContext context) {
+    public List<ZalavaProvider> createProviders(ProviderFactoryContext context) {
         return List.of(new ShoppingListProvider(new SqliteShoppingListRepository(ShoppingListStorage.path())));
     }
 }

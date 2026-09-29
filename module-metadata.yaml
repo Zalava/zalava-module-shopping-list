@@ -1,14 +1,14 @@
 schemaVersion: 1
 modules:
   - moduleId: zalava-module-shopping-list
-    version: 0.1.0-alpha.1
+    version: 0.1.0-alpha.2
     displayName: Shopping List
     description: Private household shopping-list tools backed by local SQLite storage
     supportUrl: https://github.com/Zalava/zalava-module-shopping-list
     artifact:
       groupId: org.zalava.modules
       artifactId: zalava-module-shopping-list
-      version: 0.1.0-alpha.1
+      version: 0.1.0-alpha.2
     source:
       repository: https://github.com/Zalava/zalava-module-shopping-list.git
       license: Apache-2.0

@@ -2,15 +2,15 @@ package org.zalava.modules.shoppinglist;
 
 import org.zalava.ModuleDescriptor;
 import org.zalava.ProviderFactory;
-import org.zalava.SeaModule;
-import org.zalava.web.SeaWebExtension;
+import org.zalava.ZalavaModule;
+import org.zalava.web.ZalavaWebExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
-public final class ShoppingListSeaModule implements SeaModule {
+public final class ShoppingListSeaModule implements ZalavaModule {
 
     static final String MODULE_ID = "zalava-module-shopping-list";
 
@@ -30,7 +30,7 @@ public final class ShoppingListSeaModule implements SeaModule {
     }
 
     @Override
-    public List<SeaWebExtension> webExtensions() {
+    public List<ZalavaWebExtension> webExtensions() {
         return List.of(new ShoppingListWebExtension(new SqliteShoppingListRepository(ShoppingListStorage.path())));
     }
 
