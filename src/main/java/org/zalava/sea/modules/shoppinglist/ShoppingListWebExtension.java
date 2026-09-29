@@ -1,14 +1,14 @@
 package org.zalava.modules.shoppinglist;
 
-import org.zalava.web.SeaWebExtension;
-import org.zalava.web.SeaWebRequest;
-import org.zalava.web.SeaWebResponse;
+import org.zalava.web.ZalavaWebExtension;
+import org.zalava.web.ZalavaWebRequest;
+import org.zalava.web.ZalavaWebResponse;
 import org.zalava.web.WebExtensionDescriptor;
 import org.zalava.web.WebExtensionRegistry;
 
 import java.util.List;
 
-final class ShoppingListWebExtension implements SeaWebExtension {
+final class ShoppingListWebExtension implements ZalavaWebExtension {
 
     private final ShoppingListRepository repository;
 
@@ -36,18 +36,18 @@ final class ShoppingListWebExtension implements SeaWebExtension {
                 .post("/items/bought", this::markBought);
     }
 
-    private SeaWebResponse render(SeaWebRequest request) {
-        return SeaWebResponse.html(page(null));
+    private ZalavaWebResponse render(ZalavaWebRequest request) {
+        return ZalavaWebResponse.html(page(null));
     }
 
-    private SeaWebResponse markBought(SeaWebRequest request) {
+    private ZalavaWebResponse markBought(ZalavaWebRequest request) {
         String itemName = request.firstFormParameter("name").orElse("");
         if (itemName.isBlank()) {
-            return SeaWebResponse.html(400, page("Missing item name."));
+            return ZalavaWebResponse.html(400, page("Missing item name."));
         }
         return repository.removeItem(itemName, RemovalReason.BOUGHT)
-                .map(item -> SeaWebResponse.html(page("Bought " + item.name() + ".")))
-                .orElseGet(() -> SeaWebResponse.html(404, page("Item not found: "
+                .map(item -> ZalavaWebResponse.html(page("Bought " + item.name() + ".")))
+                .orElseGet(() -> ZalavaWebResponse.html(404, page("Item not found: "
                         + ShoppingListNames.requireDisplayName(itemName) + ".")));
     }
 

@@ -8,14 +8,14 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.zalava.SeaOperationResult;
-import org.zalava.SeaProvider;
-import org.zalava.SeaToolDescriptor;
+import org.zalava.ZalavaOperationResult;
+import org.zalava.ZalavaProvider;
+import org.zalava.ZalavaToolDescriptor;
 import org.zalava.testing.ConfigFixture;
 import org.zalava.testing.ModuleContractKit;
 import org.zalava.testing.ProviderFixture;
 import org.zalava.testing.WebExtensionFixture;
-import org.zalava.web.SeaWebResponse;
+import org.zalava.web.ZalavaWebResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,7 +91,7 @@ class ShoppingListSeaModuleTest {
     @Test
     void createsTheHouseholdProviderAndDeclaresItsTools() {
         try (ProviderFixture providers = kit.providers()) {
-            SeaProvider provider = providers.requireProvider(PROVIDER_ID);
+            ZalavaProvider provider = providers.requireProvider(PROVIDER_ID);
 
             assertThat(providers.providers()).hasSize(1);
             assertThat(provider.descriptor().moduleId()).isEqualTo(MODULE_ID);
@@ -99,11 +99,11 @@ class ShoppingListSeaModuleTest {
             assertThat(provider.descriptor().policyTags())
                     .contains("sea_backed", "shopping-list", "household-data", "local-storage");
             assertThat(provider.capabilities().supportsTools()).isTrue();
-            assertThat(provider.listTools().stream().map(SeaToolDescriptor::name))
+            assertThat(provider.listTools().stream().map(ZalavaToolDescriptor::name))
                     .containsExactly("add_item", "list_items", "mark_bought", "remove_item", "purchase_summary");
             assertThat(provider.listTools())
-                    .filteredOn(SeaToolDescriptor::sideEffecting)
-                    .extracting(SeaToolDescriptor::name)
+                    .filteredOn(ZalavaToolDescriptor::sideEffecting)
+                    .extracting(ZalavaToolDescriptor::name)
                     .containsExactly("add_item", "mark_bought", "remove_item");
             assertThat(providers.requireTool(PROVIDER_ID, "add_item").inputSchema())
                     .containsEntry("required", List.of("name"));
@@ -149,7 +149,7 @@ class ShoppingListSeaModuleTest {
     @Test
     void rejectsMissingItemsInvalidArgumentsAndUnknownTools() {
         try (ProviderFixture providers = kit.providers()) {
-            SeaOperationResult missing =
+            ZalavaOperationResult missing =
                     providers.invoke(PROVIDER_ID, "remove_item", arguments().put("name", "missing"));
             assertThat(missing.success()).isFalse();
             assertThat(missing.content()).isEqualTo("Item not found: missing");
@@ -183,11 +183,11 @@ class ShoppingListSeaModuleTest {
         }
 
         WebExtensionFixture web = kit.webExtensions();
-        SeaWebResponse page = web.invoke("GET", "/");
+        ZalavaWebResponse page = web.invoke("GET", "/");
         assertThat(page.status()).isEqualTo(200);
         assertThat(page.body()).contains("Shopping List", "milk", "1 bottle");
 
-        SeaWebResponse bought = web.submit("/items/bought", Map.of("name", List.of("milk")));
+        ZalavaWebResponse bought = web.submit("/items/bought", Map.of("name", List.of("milk")));
         assertThat(bought.status()).isEqualTo(200);
         assertThat(bought.body()).contains("Bought milk.");
         assertThat(web.invoke("GET", "/").body()).doesNotContain("1 bottle");
@@ -200,7 +200,7 @@ class ShoppingListSeaModuleTest {
                     arguments().put("name", "<milk>").put("quantity", "\"large\""));
         }
 
-        SeaWebResponse page = kit.webExtensions().invoke("GET", "/");
+        ZalavaWebResponse page = kit.webExtensions().invoke("GET", "/");
         assertThat(page.body()).contains("&lt;milk&gt;", "&quot;large&quot;");
         assertThat(page.body()).doesNotContain("<milk>");
     }
@@ -214,7 +214,7 @@ class ShoppingListSeaModuleTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static String text(SeaOperationResult result) {
+    private static String text(ZalavaOperationResult result) {
         return (String) ((Map<String, Object>) result.content()).get("text");
     }
 }

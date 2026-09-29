@@ -3,17 +3,17 @@ package org.zalava.modules.shoppinglist;
 import org.zalava.InvocationContext;
 import org.zalava.ProviderCapabilities;
 import org.zalava.ProviderDescriptor;
-import org.zalava.SeaOperationResult;
-import org.zalava.SeaProvider;
-import org.zalava.SeaToolDescriptor;
-import org.zalava.SeaToolInputSchemas;
+import org.zalava.ZalavaOperationResult;
+import org.zalava.ZalavaProvider;
+import org.zalava.ZalavaToolDescriptor;
+import org.zalava.ZalavaToolInputSchemas;
 import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-final class ShoppingListProvider implements SeaProvider {
+final class ShoppingListProvider implements ZalavaProvider {
 
     static final String PROVIDER_ID = "shopping-list-household";
 
@@ -24,16 +24,16 @@ final class ShoppingListProvider implements SeaProvider {
             "local-storage"
     );
 
-    private static final List<SeaToolDescriptor> TOOLS = List.of(
+    private static final List<ZalavaToolDescriptor> TOOLS = List.of(
             tool("add_item", "Add or update an active shopping-list item.", true,
-                    Map.of("name", SeaToolInputSchemas.string(), "quantity", SeaToolInputSchemas.string()), "name"),
+                    Map.of("name", ZalavaToolInputSchemas.string(), "quantity", ZalavaToolInputSchemas.string()), "name"),
             tool("list_items", "Return the active household shopping list.", false, Map.of()),
             tool("mark_bought", "Remove an active shopping-list item and record a purchase event.", true,
-                    Map.of("name", SeaToolInputSchemas.string()), "name"),
+                    Map.of("name", ZalavaToolInputSchemas.string()), "name"),
             tool("remove_item", "Remove an active item; reason defaults to bought and discarded avoids purchase history.", true,
-                    Map.of("name", SeaToolInputSchemas.string(), "reason", SeaToolInputSchemas.string()), "name"),
+                    Map.of("name", ZalavaToolInputSchemas.string(), "reason", ZalavaToolInputSchemas.string()), "name"),
             tool("purchase_summary", "Summarize purchased item counts over recent days.", false,
-                    Map.of("days", SeaToolInputSchemas.integer()))
+                    Map.of("days", ZalavaToolInputSchemas.integer()))
     );
 
     private final ShoppingListRepository repository;
@@ -65,12 +65,12 @@ final class ShoppingListProvider implements SeaProvider {
     }
 
     @Override
-    public List<SeaToolDescriptor> listTools() {
+    public List<ZalavaToolDescriptor> listTools() {
         return TOOLS;
     }
 
     @Override
-    public SeaOperationResult callTool(String toolName, JsonNode arguments, InvocationContext context) {
+    public ZalavaOperationResult callTool(String toolName, JsonNode arguments, InvocationContext context) {
         return switch (toolName) {
             case "add_item" -> addItem(arguments);
             case "list_items" -> listItems();
@@ -81,14 +81,14 @@ final class ShoppingListProvider implements SeaProvider {
         };
     }
 
-    private SeaOperationResult addItem(JsonNode arguments) {
+    private ZalavaOperationResult addItem(JsonNode arguments) {
         ShoppingListItem item = repository.addItem(requiredText(arguments, "name"), optionalText(arguments, "quantity"));
         return success("Added " + item.name(), Map.of(
                 "item", itemContent(item)
         ));
     }
 
-    private SeaOperationResult listItems() {
+    private ZalavaOperationResult listItems() {
         List<ShoppingListItem> items = repository.listActiveItems();
         String compact = items.isEmpty()
                 ? "List is empty"
@@ -98,19 +98,19 @@ final class ShoppingListProvider implements SeaProvider {
         ));
     }
 
-    private SeaOperationResult markBought(JsonNode arguments) {
+    private ZalavaOperationResult markBought(JsonNode arguments) {
         return remove(requiredText(arguments, "name"), RemovalReason.BOUGHT);
     }
 
-    private SeaOperationResult removeItem(JsonNode arguments) {
+    private ZalavaOperationResult removeItem(JsonNode arguments) {
         RemovalReason reason = RemovalReason.from(optionalText(arguments, "reason").orElse("bought"));
         return remove(requiredText(arguments, "name"), reason);
     }
 
-    private SeaOperationResult remove(String name, RemovalReason reason) {
+    private ZalavaOperationResult remove(String name, RemovalReason reason) {
         Optional<ShoppingListItem> removed = repository.removeItem(name, reason);
         if (removed.isEmpty()) {
-            return SeaOperationResult.failure("Item not found: " + ShoppingListNames.requireDisplayName(name));
+            return ZalavaOperationResult.failure("Item not found: " + ShoppingListNames.requireDisplayName(name));
         }
         String verb = reason == RemovalReason.BOUGHT ? "Bought " : "Removed ";
         return success(verb + removed.get().name(), Map.of(
@@ -119,7 +119,7 @@ final class ShoppingListProvider implements SeaProvider {
         ));
     }
 
-    private SeaOperationResult purchaseSummary(JsonNode arguments) {
+    private ZalavaOperationResult purchaseSummary(JsonNode arguments) {
         int days = arguments == null || !arguments.hasNonNull("days") ? 30 : arguments.path("days").asInt();
         List<PurchaseSummaryItem> summary = repository.purchaseSummary(days);
         String compact = summary.isEmpty()
@@ -135,8 +135,8 @@ final class ShoppingListProvider implements SeaProvider {
         ));
     }
 
-    private static SeaOperationResult success(String text, Map<String, Object> content) {
-        return new SeaOperationResult(true, Map.of("text", text, "data", content), Map.of("providerId", PROVIDER_ID));
+    private static ZalavaOperationResult success(String text, Map<String, Object> content) {
+        return new ZalavaOperationResult(true, Map.of("text", text, "data", content), Map.of("providerId", PROVIDER_ID));
     }
 
     private static String requiredText(JsonNode arguments, String name) {
@@ -168,17 +168,17 @@ final class ShoppingListProvider implements SeaProvider {
                 .orElse(item.name());
     }
 
-    private static SeaToolDescriptor tool(String name,
+    private static ZalavaToolDescriptor tool(String name,
                                           String description,
                                           boolean sideEffecting,
                                           Map<String, Object> properties,
                                           String... required) {
-        return new SeaToolDescriptor(
+        return new ZalavaToolDescriptor(
                 name,
                 description,
                 sideEffecting,
                 POLICY_TAGS,
-                SeaToolInputSchemas.object(properties, required)
+                ZalavaToolInputSchemas.object(properties, required)
         );
     }
 }
