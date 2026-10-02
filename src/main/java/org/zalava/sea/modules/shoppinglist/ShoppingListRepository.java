@@ -5,11 +5,11 @@ import java.util.Optional;
 
 interface ShoppingListRepository {
 
-    ShoppingListItem addItem(String name, Optional<String> quantity);
+  ShoppingListItem addItem(String name, Optional<String> quantity);
 
-    List<ShoppingListItem> listActiveItems();
+  List<ShoppingListItem> listActiveItems();
 
-    Optional<ShoppingListItem> removeItem(String name, RemovalReason reason);
+  Optional<ShoppingListItem> removeItem(String name, RemovalReason reason);
 
-    List<PurchaseSummaryItem> purchaseSummary(int days);
+  List<PurchaseSummaryItem> purchaseSummary(int days);
 }
