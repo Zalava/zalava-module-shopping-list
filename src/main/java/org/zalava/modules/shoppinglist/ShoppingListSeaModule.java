@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-import org.zalava.ModuleDescriptor;
-import org.zalava.ProviderFactory;
-import org.zalava.ZalavaModule;
-import org.zalava.web.ZalavaWebExtension;
+import org.zalava.api.ModuleDescriptor;
+import org.zalava.api.ProviderFactory;
+import org.zalava.api.ZalavaModule;
+import org.zalava.api.extensions.web.ZalavaWebExtension;
 
 public final class ShoppingListSeaModule implements ZalavaModule {
 

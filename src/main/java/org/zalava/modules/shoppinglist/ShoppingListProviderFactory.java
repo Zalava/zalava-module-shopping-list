@@ -1,10 +1,10 @@
 package org.zalava.modules.shoppinglist;
 
 import java.util.List;
-import org.zalava.ProviderFactory;
-import org.zalava.ProviderFactoryContext;
-import org.zalava.ProviderFactoryDescriptor;
-import org.zalava.ZalavaProvider;
+import org.zalava.api.ProviderFactory;
+import org.zalava.api.ProviderFactoryContext;
+import org.zalava.api.ProviderFactoryDescriptor;
+import org.zalava.api.ZalavaProvider;
 
 final class ShoppingListProviderFactory implements ProviderFactory {
 

@@ -12,14 +12,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.zalava.ZalavaOperationResult;
-import org.zalava.ZalavaProvider;
-import org.zalava.ZalavaToolDescriptor;
-import org.zalava.testing.ConfigFixture;
-import org.zalava.testing.ModuleContractKit;
-import org.zalava.testing.ProviderFixture;
-import org.zalava.testing.WebExtensionFixture;
-import org.zalava.web.ZalavaWebResponse;
+import org.zalava.api.ZalavaOperationResult;
+import org.zalava.api.ZalavaProvider;
+import org.zalava.api.ZalavaToolDescriptor;
+import org.zalava.api.extensions.web.ZalavaWebResponse;
+import org.zalava.api.testing.ConfigFixture;
+import org.zalava.api.testing.ModuleContractKit;
+import org.zalava.api.testing.ProviderFixture;
+import org.zalava.api.testing.WebExtensionFixture;
 import tools.jackson.databind.node.JsonNodeFactory;
 import tools.jackson.databind.node.ObjectNode;
 
@@ -131,32 +131,86 @@ class ShoppingListSeaModuleTest {
                   providers.invoke(
                       PROVIDER_ID,
                       "add_item",
-                      arguments().put("name", "eggs").put("quantity", "2 packs"))))
+                      new tools.jackson.databind.json.JsonMapper()
+                          .convertValue(
+                              arguments().put("name", "eggs").put("quantity", "2 packs"),
+                              new tools.jackson.core.type.TypeReference<
+                                  java.util.Map<String, Object>>() {}))))
           .isEqualTo("Added eggs");
-      assertThat(text(providers.invoke(PROVIDER_ID, "list_items", arguments())))
+      assertThat(
+              text(
+                  providers.invoke(
+                      PROVIDER_ID,
+                      "list_items",
+                      new tools.jackson.databind.json.JsonMapper()
+                          .convertValue(
+                              arguments(),
+                              new tools.jackson.core.type.TypeReference<
+                                  java.util.Map<String, Object>>() {}))))
           .isEqualTo("List: eggs (2 packs)");
       assertThat(
-              text(providers.invoke(PROVIDER_ID, "mark_bought", arguments().put("name", "EGGS"))))
+              text(
+                  providers.invoke(
+                      PROVIDER_ID,
+                      "mark_bought",
+                      new tools.jackson.databind.json.JsonMapper()
+                          .convertValue(
+                              arguments().put("name", "EGGS"),
+                              new tools.jackson.core.type.TypeReference<
+                                  java.util.Map<String, Object>>() {}))))
           .isEqualTo("Bought eggs");
 
-      providers.invoke(PROVIDER_ID, "add_item", arguments().put("name", "bread"));
+      providers.invoke(
+          PROVIDER_ID,
+          "add_item",
+          new tools.jackson.databind.json.JsonMapper()
+              .convertValue(
+                  arguments().put("name", "bread"),
+                  new tools.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {}));
       assertThat(
               text(
                   providers.invoke(
                       PROVIDER_ID,
                       "remove_item",
-                      arguments().put("name", "bread").put("reason", "discarded"))))
+                      new tools.jackson.databind.json.JsonMapper()
+                          .convertValue(
+                              arguments().put("name", "bread").put("reason", "discarded"),
+                              new tools.jackson.core.type.TypeReference<
+                                  java.util.Map<String, Object>>() {}))))
           .isEqualTo("Removed bread");
 
       assertThat(
-              text(providers.invoke(PROVIDER_ID, "purchase_summary", arguments().put("days", 7))))
+              text(
+                  providers.invoke(
+                      PROVIDER_ID,
+                      "purchase_summary",
+                      new tools.jackson.databind.json.JsonMapper()
+                          .convertValue(
+                              arguments().put("days", 7),
+                              new tools.jackson.core.type.TypeReference<
+                                  java.util.Map<String, Object>>() {}))))
           .isEqualTo("Purchases: eggs x1");
 
-      providers.invoke(PROVIDER_ID, "add_item", arguments().put("name", "milk"));
+      providers.invoke(
+          PROVIDER_ID,
+          "add_item",
+          new tools.jackson.databind.json.JsonMapper()
+              .convertValue(
+                  arguments().put("name", "milk"),
+                  new tools.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {}));
     }
 
     try (ProviderFixture reopened = kit.providers()) {
-      assertThat(text(reopened.invoke(PROVIDER_ID, "list_items", arguments())))
+      assertThat(
+              text(
+                  reopened.invoke(
+                      PROVIDER_ID,
+                      "list_items",
+                      new tools.jackson.databind.json.JsonMapper()
+                          .convertValue(
+                              arguments(),
+                              new tools.jackson.core.type.TypeReference<
+                                  java.util.Map<String, Object>>() {}))))
           .isEqualTo("List: milk");
     }
   }
@@ -165,15 +219,39 @@ class ShoppingListSeaModuleTest {
   void rejectsMissingItemsInvalidArgumentsAndUnknownTools() {
     try (ProviderFixture providers = kit.providers()) {
       ZalavaOperationResult missing =
-          providers.invoke(PROVIDER_ID, "remove_item", arguments().put("name", "missing"));
+          providers.invoke(
+              PROVIDER_ID,
+              "remove_item",
+              new tools.jackson.databind.json.JsonMapper()
+                  .convertValue(
+                      arguments().put("name", "missing"),
+                      new tools.jackson.core.type.TypeReference<
+                          java.util.Map<String, Object>>() {}));
       assertThat(missing.success()).isFalse();
       assertThat(missing.content()).isEqualTo("Item not found: missing");
 
-      assertThatThrownBy(() -> providers.invoke(PROVIDER_ID, "add_item", arguments()))
+      assertThatThrownBy(
+              () ->
+                  providers.invoke(
+                      PROVIDER_ID,
+                      "add_item",
+                      new tools.jackson.databind.json.JsonMapper()
+                          .convertValue(
+                              arguments(),
+                              new tools.jackson.core.type.TypeReference<
+                                  java.util.Map<String, Object>>() {})))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("name is required");
       assertThatThrownBy(
-              () -> providers.invoke(PROVIDER_ID, "purchase_summary", arguments().put("days", 0)))
+              () ->
+                  providers.invoke(
+                      PROVIDER_ID,
+                      "purchase_summary",
+                      new tools.jackson.databind.json.JsonMapper()
+                          .convertValue(
+                              arguments().put("days", 0),
+                              new tools.jackson.core.type.TypeReference<
+                                  java.util.Map<String, Object>>() {})))
           .isInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("days must be at least 1");
     }
@@ -196,7 +274,12 @@ class ShoppingListSeaModuleTest {
   void rendersItemsAndMarksThemBoughtThroughSyntheticRequests() {
     try (ProviderFixture providers = kit.providers()) {
       providers.invoke(
-          PROVIDER_ID, "add_item", arguments().put("name", "milk").put("quantity", "1 bottle"));
+          PROVIDER_ID,
+          "add_item",
+          new tools.jackson.databind.json.JsonMapper()
+              .convertValue(
+                  arguments().put("name", "milk").put("quantity", "1 bottle"),
+                  new tools.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {}));
     }
 
     WebExtensionFixture web = kit.webExtensions();
@@ -214,7 +297,12 @@ class ShoppingListSeaModuleTest {
   void escapesItemContentInThePage() {
     try (ProviderFixture providers = kit.providers()) {
       providers.invoke(
-          PROVIDER_ID, "add_item", arguments().put("name", "<milk>").put("quantity", "\"large\""));
+          PROVIDER_ID,
+          "add_item",
+          new tools.jackson.databind.json.JsonMapper()
+              .convertValue(
+                  arguments().put("name", "<milk>").put("quantity", "\"large\""),
+                  new tools.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {}));
     }
 
     ZalavaWebResponse page = kit.webExtensions().invoke("GET", "/");

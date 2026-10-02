@@ -1,11 +1,11 @@
 package org.zalava.modules.shoppinglist;
 
 import java.util.List;
-import org.zalava.web.WebExtensionDescriptor;
-import org.zalava.web.WebExtensionRegistry;
-import org.zalava.web.ZalavaWebExtension;
-import org.zalava.web.ZalavaWebRequest;
-import org.zalava.web.ZalavaWebResponse;
+import org.zalava.api.extensions.web.WebExtensionDescriptor;
+import org.zalava.api.extensions.web.WebExtensionRegistry;
+import org.zalava.api.extensions.web.ZalavaWebExtension;
+import org.zalava.api.extensions.web.ZalavaWebRequest;
+import org.zalava.api.extensions.web.ZalavaWebResponse;
 
 final class ShoppingListWebExtension implements ZalavaWebExtension {
 
