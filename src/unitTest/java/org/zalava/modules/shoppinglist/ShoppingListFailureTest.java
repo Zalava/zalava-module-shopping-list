@@ -9,7 +9,7 @@ import java.sql.DriverManager;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.zalava.InvocationContext;
+import org.zalava.api.InvocationContext;
 import tools.jackson.databind.json.JsonMapper;
 
 class ShoppingListFailureTest {
@@ -69,26 +69,63 @@ class ShoppingListFailureTest {
     var json = new JsonMapper();
     assertThat(provider.capabilities().supportsTools()).isTrue();
     assertThatThrownBy(
-            () -> provider.callTool("unknown", json.createObjectNode(), InvocationContext.system()))
+            () ->
+                provider.callTool(
+                    "unknown",
+                    new tools.jackson.databind.json.JsonMapper()
+                        .convertValue(
+                            json.createObjectNode(),
+                            new tools.jackson.core.type.TypeReference<
+                                java.util.Map<String, Object>>() {}),
+                    InvocationContext.system()))
         .hasMessageContaining("Unknown shopping-list tool");
-    assertThatThrownBy(() -> provider.callTool("add_item", null, InvocationContext.system()))
+    assertThatThrownBy(
+            () ->
+                provider.callTool(
+                    "add_item",
+                    new tools.jackson.databind.json.JsonMapper()
+                        .convertValue(
+                            null,
+                            new tools.jackson.core.type.TypeReference<
+                                java.util.Map<String, Object>>() {}),
+                    InvocationContext.system()))
         .hasMessage("name is required");
     assertThatThrownBy(
             () ->
                 provider.callTool(
                     "add_item",
-                    json.createObjectNode().put("name", " "),
+                    new tools.jackson.databind.json.JsonMapper()
+                        .convertValue(
+                            json.createObjectNode().put("name", " "),
+                            new tools.jackson.core.type.TypeReference<
+                                java.util.Map<String, Object>>() {}),
                     InvocationContext.system()))
         .hasMessage("name is required");
     provider.callTool(
         "add_item",
-        json.createObjectNode().put("name", "Milk").put("quantity", " "),
+        new tools.jackson.databind.json.JsonMapper()
+            .convertValue(
+                json.createObjectNode().put("name", "Milk").put("quantity", " "),
+                new tools.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {}),
         InvocationContext.system());
     provider.callTool(
         "add_item",
-        json.createObjectNode().put("name", "Eggs").putNull("quantity"),
+        new tools.jackson.databind.json.JsonMapper()
+            .convertValue(
+                json.createObjectNode().put("name", "Eggs").putNull("quantity"),
+                new tools.jackson.core.type.TypeReference<java.util.Map<String, Object>>() {}),
         InvocationContext.system());
-    assertThat(provider.callTool("purchase_summary", null, InvocationContext.system()).success())
+    assertThat(
+            provider
+                .callTool(
+                    "purchase_summary",
+                    new tools.jackson.databind.json.JsonMapper()
+                        .convertValue(
+                            null,
+                            new tools.jackson.core.type.TypeReference<
+                                java.util.Map<String, Object>>() {}),
+                    InvocationContext.system())
+                .success())
         .isTrue();
     Files.delete(database);
     Files.createDirectory(database);
