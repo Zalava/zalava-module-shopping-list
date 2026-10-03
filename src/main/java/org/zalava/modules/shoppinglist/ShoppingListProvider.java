@@ -17,7 +17,7 @@ final class ShoppingListProvider implements ZalavaProvider {
   static final String PROVIDER_ID = "shopping-list-household";
 
   private static final List<String> POLICY_TAGS =
-      List.of("sea_backed", "shopping-list", "household-data", "local-storage");
+      List.of("zalava_backed", "shopping-list", "household-data", "local-storage");
 
   private static final List<ZalavaToolDescriptor> TOOLS =
       List.of(
@@ -62,11 +62,11 @@ final class ShoppingListProvider implements ZalavaProvider {
     this.descriptor =
         new ProviderDescriptor(
             PROVIDER_ID,
-            ShoppingListSeaModule.MODULE_ID,
+            ShoppingListZalavaModule.MODULE_ID,
             "shopping-list",
             "Household Shopping List",
             "One private household shopping list backed by local SQLite storage.",
-            ShoppingListSeaModule.version(),
+            ShoppingListZalavaModule.version(),
             ProviderCapabilities.toolsOnly(),
             POLICY_TAGS,
             Map.of("storage", "sqlite", "list", "household"));

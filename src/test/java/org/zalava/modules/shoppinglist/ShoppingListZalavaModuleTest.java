@@ -27,14 +27,14 @@ import tools.jackson.databind.node.ObjectNode;
  * Exercises the real built module JAR at the stable {@code module-api} boundary through the
  * released contract kit. The module owns a local SQLite database, so each test points its
  * module-owned storage property at a {@link TempDir}. Host-owned resolution, validation,
- * permissions and persistence stay covered by SEA.
+ * permissions and persistence stay covered by Zalava.
  */
-class ShoppingListSeaModuleTest {
+class ShoppingListZalavaModuleTest {
 
   private static final String MODULE_ID = "zalava-module-shopping-list";
   private static final String FACTORY_ID = "shopping-list-household";
   private static final String PROVIDER_ID = "shopping-list-household";
-  private static final String SQLITE_PATH_PROPERTY = "sea.module.shopping-list.sqlite.path";
+  private static final String SQLITE_PATH_PROPERTY = "zalava.module.shopping-list.sqlite.path";
 
   @TempDir Path tempDir;
 
@@ -97,7 +97,7 @@ class ShoppingListSeaModuleTest {
       assertThat(provider.descriptor().moduleId()).isEqualTo(MODULE_ID);
       assertThat(provider.descriptor().providerType()).isEqualTo("shopping-list");
       assertThat(provider.descriptor().policyTags())
-          .contains("sea_backed", "shopping-list", "household-data", "local-storage");
+          .contains("zalava_backed", "shopping-list", "household-data", "local-storage");
       assertThat(provider.capabilities().supportsTools()).isTrue();
       assertThat(provider.listTools().stream().map(ZalavaToolDescriptor::name))
           .containsExactly(

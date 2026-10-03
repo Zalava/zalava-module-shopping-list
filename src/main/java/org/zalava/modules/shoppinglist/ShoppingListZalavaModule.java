@@ -9,7 +9,7 @@ import org.zalava.api.ProviderFactory;
 import org.zalava.api.ZalavaModule;
 import org.zalava.api.extensions.web.ZalavaWebExtension;
 
-public final class ShoppingListSeaModule implements ZalavaModule {
+public final class ShoppingListZalavaModule implements ZalavaModule {
 
   static final String MODULE_ID = "zalava-module-shopping-list";
 
@@ -36,7 +36,7 @@ public final class ShoppingListSeaModule implements ZalavaModule {
   static String version() {
     Properties properties = new Properties();
     try (InputStream input =
-        ShoppingListSeaModule.class.getResourceAsStream("/module.properties")) {
+        ShoppingListZalavaModule.class.getResourceAsStream("/module.properties")) {
       if (input == null) {
         throw new IllegalStateException("Missing module version metadata");
       }

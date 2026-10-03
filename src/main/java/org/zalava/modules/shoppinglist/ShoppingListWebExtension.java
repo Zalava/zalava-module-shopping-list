@@ -18,7 +18,7 @@ final class ShoppingListWebExtension implements ZalavaWebExtension {
   @Override
   public WebExtensionDescriptor descriptor() {
     return new WebExtensionDescriptor(
-        ShoppingListSeaModule.MODULE_ID,
+        ShoppingListZalavaModule.MODULE_ID,
         "shopping-list",
         "Shopping List",
         "View the household shopping list and mark items bought.");
@@ -79,7 +79,7 @@ final class ShoppingListWebExtension implements ZalavaWebExtension {
           """
                     <div class="notification is-light has-text-centered py-6">
                         <p class="has-text-weight-semibold mb-1">The shopping list is empty.</p>
-                        <p class="has-text-grey">Add items through chat or another SEA channel.</p>
+                        <p class="has-text-grey">Add items through chat or another Zalava channel.</p>
                     </div>
                     """);
     } else {
