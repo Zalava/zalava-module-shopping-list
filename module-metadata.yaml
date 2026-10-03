@@ -16,7 +16,7 @@ modules:
       command: ["./gradlew", "build"]
       verificationCommand: ["./gradlew", "test"]
     compatibility:
-      seaRuntime: ">=1.0.0 <2.0.0"
+      zalavaRuntime: ">=1.0.0 <2.0.0"
     configurationSchema:
       type: object
       properties:

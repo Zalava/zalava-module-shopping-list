@@ -12,7 +12,7 @@ final class ShoppingListProviderFactory implements ProviderFactory {
   public ProviderFactoryDescriptor descriptor() {
     return new ProviderFactoryDescriptor(
         "shopping-list-household",
-        ShoppingListSeaModule.MODULE_ID,
+        ShoppingListZalavaModule.MODULE_ID,
         "shopping-list",
         "Household shopping list factory",
         "Creates the private household shopping-list provider");

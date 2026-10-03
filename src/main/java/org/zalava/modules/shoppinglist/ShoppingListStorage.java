@@ -4,8 +4,8 @@ import java.nio.file.Path;
 
 final class ShoppingListStorage {
 
-  private static final String SQLITE_PATH_PROPERTY = "sea.module.shopping-list.sqlite.path";
-  private static final String SQLITE_PATH_ENV = "SEA_MODULE_SHOPPING_LIST_SQLITE_PATH";
+  private static final String SQLITE_PATH_PROPERTY = "zalava.module.shopping-list.sqlite.path";
+  private static final String SQLITE_PATH_ENV = "ZALAVA_MODULE_SHOPPING_LIST_SQLITE_PATH";
 
   private ShoppingListStorage() {}
 
